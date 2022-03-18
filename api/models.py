@@ -1,5 +1,7 @@
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.forms import CharField
 from django.utils.translation import gettext_lazy as _
 import datetime
 from django.utils import timezone
@@ -64,3 +66,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
+
+    
+class Flight(models.Model):
+    flight_id = models.CharField(primary_key=True)
+    arrival_time = models.TimeField(default=datetime.now().time)
+    departure_time = models.TimeField(default=datetime.now().time)
+    destination = models.CharField(max_length=100)
+    duration = models.TimeField(default=datetime.now().time)
+    no_of_seats = models.IntegerField()
+    airline_name = models.CharField(max_length=100)
+    airport_location = models.CharField(max_length=100)
+    available_seats = models.IntegerField()
+    type = models.CharField(max_length=100)
+
+SEAT_TYPE_CHOICES = 
+class Seat(models.Model):
+    flight_id = models.ForeignKey(Flight,null=False,blank=False)
+    seat_id = models.CharField(primary_key=True)
+    class_type = models.CharField(max_length=100)
+    type_of_seat = models.
+# class Ticket(models.Model):
+#     pnr = models.CharField(max_length=100)
+#     passenger_id = models.ForeignKey(User,on_delete=models.CASCADE)
+#     flight_id = models.ForeignKey()
