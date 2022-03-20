@@ -1,0 +1,1 @@
+web: gunicorn flight_management_backend.wsgi
