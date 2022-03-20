@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 import datetime
 from django.utils import timezone
 
-#User Model
+# User Model
 
 # Create your models here.
 COUNTRY_CODE_CHOICES = (
@@ -71,66 +71,80 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.email}"
 
-#Flight Model
+
+# Flight Model
 class Flight(models.Model):
-    flight_id = models.CharField(primary_key=True)
-    arrival_time = models.TimeField(default=datetime.now().time)
-    departure_time = models.TimeField(default=datetime.now().time)
+    flight_id = models.CharField(primary_key=True, max_length=100)
+    arrival_time = models.TimeField(default=datetime.time(10, 00, 00))
+    departure_time = models.TimeField(default=datetime.time(10, 00, 00))
     destination = models.CharField(max_length=100)
-    duration = models.TimeField(default=datetime.now().time)
+    duration = models.TimeField(default=datetime.time(10, 00, 00))
     no_of_seats = models.IntegerField()
     airline_name = models.CharField(max_length=100)
     airport_location = models.CharField(max_length=100)
     available_seats = models.IntegerField()
     type = models.CharField(max_length=100)
 
-SEAT_TYPE_CHOICES = (
-    ("aisle","aisle"),
-    ("window","window")
-)
-SEAT_PREFERENCE_CHOICES = (
-    ("double","double"),
-    ("triple","triple")
-)
-#Seat Models
-class Seat(models.Model):
-    flight_id = models.ForeignKey(Flight,null=False,blank=False)
-    seat_id = models.CharField(primary_key=True)
-    class_type = models.CharField(max_length=100)
-    type_of_seat = models.CharField(max_length=100,choices=SEAT_TYPE_CHOICES,default=SEAT_TYPE_CHOICES[0][0])
-    seat_preference = models.CharField(max_length=100,choices=SEAT_PREFERENCE_CHOICES,default=SEAT_PREFERENCE_CHOICES[0][0])
-    is_special = models.BooleanField(default=False)
-    special_seat_type = models.CharField(null=True,blank=True)
 
-#Ticket Model
+SEAT_TYPE_CHOICES = (("aisle", "aisle"), ("window", "window"))
+SEAT_PREFERENCE_CHOICES = (("double", "double"), ("triple", "triple"))
+# Seat Models
+class Seat(models.Model):
+    flight_id = models.ForeignKey(
+        Flight, on_delete=models.CASCADE, null=False, blank=False
+    )
+    seat_id = models.CharField(primary_key=True, max_length=100)
+    class_type = models.CharField(max_length=100)
+    type_of_seat = models.CharField(
+        max_length=100, choices=SEAT_TYPE_CHOICES, default=SEAT_TYPE_CHOICES[0][0]
+    )
+    seat_preference = models.CharField(
+        max_length=100,
+        choices=SEAT_PREFERENCE_CHOICES,
+        default=SEAT_PREFERENCE_CHOICES[0][0],
+    )
+    is_special = models.BooleanField(default=False)
+    special_seat_type = models.CharField(max_length=100, null=True, blank=True)
+
+
+# Ticket Model
 GOVERNMENT_ID_TYPE_CHOICES = (
-    ("adhaar","adhaar"),
-    ("driving_license","driving_license")
+    ("adhaar", "adhaar"),
+    ("driving_license", "driving_license"),
 )
+
+
 class Ticket(models.Model):
     pnr = models.CharField(max_length=100)
-    passenger_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    flight_id = models.ForeignKey(Flight,on_delete=models.CASCADE)
-    seat_id = models.ForeignKey(Seat,on_delete=models.CASCADE)
+    passenger_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    flight_id = models.ForeignKey(Flight, on_delete=models.CASCADE)
+    seat_id = models.ForeignKey(Seat, on_delete=models.CASCADE)
     depture_date = models.DateField(default=datetime.datetime.today)
     depture_date = models.DateField(default=datetime.datetime.today)
     fare = models.IntegerField()
     passport = models.CharField(max_length=100)
-    government_id_type = models.CharField(max_length=100,choices=GOVERNMENT_ID_TYPE_CHOICES,default=GOVERNMENT_ID_TYPE_CHOICES[0][0])
+    government_id_type = models.CharField(
+        max_length=100,
+        choices=GOVERNMENT_ID_TYPE_CHOICES,
+        default=GOVERNMENT_ID_TYPE_CHOICES[0][0],
+    )
     government_id_number = models.CharField(max_length=100)
     health_status = models.CharField(max_length=100)
     booking_date = models.DateField(default=datetime.datetime.today)
 
+
 PAYMENT_MODE_CHOICES = (
-    ("upi","upi"),
-    ("net_banking","net_banking"),
-    ("bank_transfer","bank_transfer")
+    ("upi", "upi"),
+    ("net_banking", "net_banking"),
+    ("bank_transfer", "bank_transfer"),
 )
-#Payment Model
+# Payment Model
+
 
 class Payment(models.Model):
-    passenger_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    mode_of_pay = models.CharField(max_length=100,choices=PAYMENT_MODE_CHOICES,default=PAYMENT_MODE_CHOICES[0][0])
+    passenger_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    mode_of_pay = models.CharField(
+        max_length=100, choices=PAYMENT_MODE_CHOICES, default=PAYMENT_MODE_CHOICES[0][0]
+    )
     transaction_id = models.CharField(max_length=100)
-    ticket_id = models.ForeignKey(Ticket,on_delete=models.CASCADE)
-    
+    ticket_id = models.ForeignKey(Ticket, on_delete=models.CASCADE)
