@@ -12,6 +12,10 @@ router = routers.DefaultRouter()
 
 # define the router path and viewset to be used
 router.register(r"user", UserViewSet)
+router.register(r"flight", FlightViewSet)
+router.register(r"seat", SeatViewSet)
+router.register(r"ticket", TicketViewSet)
+router.register(r"payment", PaymentViewSet)
 
 # specify URL Path for rest_framework
 urlpatterns = [
